@@ -2,6 +2,7 @@ use std::{fs, io};
 
 use peppi;
 use peppi::model::game::Frames;
+use peppi::serde::collect::{Opts, Rollback};
 
 use foxfish::Evaluator;
 
@@ -9,9 +10,12 @@ use foxfish::Evaluator;
 fn it_evaluates() {
     let mut buf = io::BufReader::new(
         fs::File::open("game.slp").unwrap());
-    let game = peppi::game(&mut buf, None, None).unwrap();
+		
+	let collect_opts = Opts { rollback: Rollback::Last };
 
-	let frame_idx = 592; // index is super weird here
+	let game = peppi::game(&mut buf, None, Some(&collect_opts)).unwrap();
+
+	let frame_idx = 539; // index would be 592 if we used Rollback::All
 
 	match game.frames {
 		Frames::P1(frames) => {
