@@ -1,37 +1,53 @@
 use std::io;
 
-use peppi::model::frame::Frame;
+use peppi::model::frame::{
+	Frame,
+	PortData
+};
+use peppi::model::primitives::{
+	Position
+};
 
-type StockAdvantage = f32;
+use crate::stage;
 
-pub trait FrameTrait {
-    fn evaluate<F: Fn(&Self) -> StockAdvantage>(&self, evaluator: F) -> StockAdvantage;
-}
+pub type StockAdvantage = f32;
 
-impl FrameTrait for Frame<1> {
-    fn evaluate<F: Fn(&Self) -> StockAdvantage>(&self, evaluator: F) -> StockAdvantage {
-		return 0.;
+pub fn checkmate(port: &PortData, stage: peppi::model::enums::stage::Stage) -> bool {
+	// If any velocity plus position is past a blast zone, return true
+	// println!("Port: {:?}", port);
+
+    let data = port.leader.post;
+
+    let stage_data = stage::Stages::get_data(stage).unwrap();
+
+    let current_velocity = data.velocities.unwrap();
+
+    let next_position = Position {
+        x: data.position.x + current_velocity.knockback.x + current_velocity.autogenous.x,
+        y: data.position.y + current_velocity.knockback.y + current_velocity.autogenous.y,
+    };
+
+    println!("Character: {:?}", data.character);
+    println!("Current position: {:?}", data.position);
+    println!("Velocities: {:?}", current_velocity);
+    println!("Next position: {:?}", next_position);
+    println!("Blasts: {:?}", stage_data.blasts);
+
+    if 
+        next_position.x < stage_data.blasts.left || 
+        next_position.x > stage_data.blasts.right || 
+        next_position.y < stage_data.blasts.bottom || 
+        next_position.y > stage_data.blasts.top 
+    {
+        println!("Checkmate!");
+        return true;
     }
+
+	return false;
 }
 
-impl FrameTrait for Frame<2> {
-    fn evaluate<F: Fn(&Self) -> StockAdvantage>(&self, evaluator: F) -> StockAdvantage {
-        evaluator(&self)
-    }
-}
+pub fn position<const N: usize>(frame: &Frame<N>) -> StockAdvantage {
+	// println!("Frame: {:?}", frame);
 
-impl FrameTrait for Frame<3> {
-    fn evaluate<F: Fn(&Self) -> StockAdvantage>(&self, evaluator: F) -> StockAdvantage {
-        evaluator(&self)
-    }
-}
-
-impl FrameTrait for Frame<4> {
-    fn evaluate<F: Fn(&Self) -> StockAdvantage>(&self, evaluator: F) -> StockAdvantage {
-        evaluator(&self)
-    }
-}
-
-pub fn evaluation<const N: usize>(frame: &Frame<N>) -> StockAdvantage {
 	return 0.;
 }
