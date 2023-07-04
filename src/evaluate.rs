@@ -1,5 +1,7 @@
 use std::io;
 
+use bonc::stages::Stages;
+
 use peppi::model::frame::{
 	Frame,
 	PortData
@@ -8,8 +10,6 @@ use peppi::model::primitives::{
 	Position
 };
 
-use crate::stage;
-
 pub type StockAdvantage = f32;
 
 pub fn checkmate(port: &PortData, stage: peppi::model::enums::stage::Stage) -> bool {
@@ -17,7 +17,7 @@ pub fn checkmate(port: &PortData, stage: peppi::model::enums::stage::Stage) -> b
 
     let data = port.leader.post;
 
-    let stage_data = stage::Stages::get_data(stage).unwrap();
+    let stage_data = Stages::get_data(stage).unwrap();
 
     let current_velocity = data.velocities.unwrap();
 
@@ -38,13 +38,13 @@ pub fn checkmate(port: &PortData, stage: peppi::model::enums::stage::Stage) -> b
 	return false;
 }
 
-pub fn percentage_advantage(port: &PortData) -> StockAdvantage {
+pub fn percentage_advantage(frame: &Frame<2>) -> StockAdvantage {
 	// Players at a higher percentage are at a disadvantage
 
 	return 0.;
 }
 
-pub fn positional_advantage(port: &PortData, stage: peppi::model::enums::stage::Stage) -> StockAdvantage {
+pub fn positional_advantage(frame: &Frame<2>, stage: peppi::model::enums::stage::Stage) -> StockAdvantage {
     // Player further from center of stage is at a disadvantage
 
     // Player further below the stage is at a disadvantage
@@ -52,13 +52,13 @@ pub fn positional_advantage(port: &PortData, stage: peppi::model::enums::stage::
 	return 0.;
 }
 
-pub fn frame_advantage(port: &PortData) -> StockAdvantage {
+pub fn frame_advantage(frame: &Frame<2>) -> StockAdvantage {
 	// Players stuck in a commited action are at a disadvantage
 
 	return 0.;
 }
 
-pub fn intangibility_advantage(port: &PortData) -> StockAdvantage {
+pub fn intangibility_advantage(frame: &Frame<2>) -> StockAdvantage {
 	// Players close to an intangible player are at a disadvantage
 
 	return 0.;

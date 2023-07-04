@@ -2,7 +2,6 @@ use peppi::model::frame::Frame;
 use peppi::model::enums::stage::Stage;
 
 pub mod evaluate;
-pub mod stage;
 
 pub struct Evaluator<const N: usize> {
     pub frame: Frame<N>,
